@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+message_file = ARGV[0]
+message = File.read(message_file)
+
+regex = /\[GITHUB-(\d+)\]|\[Merge\]|\[Auth: (\d+)\]/
+
+if !regex.match(message)
+    puts "[POLICY] Rejected. Please enter a ticket number in your commit"
+    exit 1
+end
+

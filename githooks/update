@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+
+# This is an update hook (to be installed on a central GIT repository)
+# Defines the variables
+refname = ARGV[0]
+oldrev  = ARGV[1]
+newrev  = ARGV[2]
+user    = ENV['USER']
+
+# Defines what sort of messages the commit statements should have
+# Rules:
+# #1: JIRA Key in []
+# #2: Merge or merge commits
+# #3: Authorization code in []
+
+regex = /\[GITHUB-(\d+)\]|Merge|merge|\[Auth: (\d+)\]/
+
+# Ensure that refs can't be deleted
+def check_deleted(newrev)
+    if newrev == "0000000000000000000000000000000000000000"
+        puts "[POLICY} You can not delete objects"
+        exit 1
+    end
+end
+
+# enforced custom commit message format
+def check_message_format(regex, oldrev, newrev)
+    missed_revs = `git rev-list #{oldrev}..#{newrev}`.split("\n")
+    bad_commits = ""
+    auth_fail = 0
+    missed_revs.each do |rev|
+        message = `git cat-file commit #{rev} | sed '1,/^$/d'`
+        if !regex.match(message) then
+            bad_commits += "#{rev}\n"
+        else
+            # Increment fail counter on failure
+            auth_fail += verify_authcode(msg)
+        end
+        
+    end
+
+    if auth_fail > 0 or bad_commits.split("\n").nitems.to_i > 0 then
+            puts "[POLICY] Please ensure that your commit messages contain ticket or a current authorization numbers"
+            puts "The list of commits you sent were: "
+            puts bad_commits
+            exit 1
+    end
+end
+
+# Verify authorization code
+def verify_authcode(msg)
+    authcode_regex = Regexp.new('\[Auth: (\d+)\]')
+    auth_match = authcode_regex.match(msg)
+    if auth_match then
+        auth_code = auth_match[1] #TODO: Remote service handling code
+        puts "[WARN] As there is no authorization service, we are"
+        puts "rejecting the update request."
+        puts "Have a nice day!"
+        return 1
+    else
+        return 0
+    end
+end
+
+check_deleted(newrev)
+check_message_format(regex, oldrev, newrev)
+

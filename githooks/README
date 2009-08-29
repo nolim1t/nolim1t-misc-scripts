@@ -1,0 +1,10 @@
+This folder contains a collection of commit message validation hooks on
+the local end (commit-msg) and the remote/receiving end (update).
+
+
+This folder also contains code validator pre-commit hooks (Local only!).
+
+To activate - copy them to your GIT_DIR/hooks of your repository.
+
+
+Enjoy!
