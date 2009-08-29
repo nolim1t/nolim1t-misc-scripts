@@ -2,7 +2,7 @@
 message_file = ARGV[0]
 message = File.read(message_file)
 
-regex = /\[GITHUB-(\d+)\]|\[Merge\]|\[Auth: (\d+)\]/
+regex = /\[GITHUB-(\d+)\]|Merge|merge|\[Auth: (\d+)\]/
 
 if !regex.match(message)
     puts "[POLICY] Rejected. Please enter a ticket number in your commit"
