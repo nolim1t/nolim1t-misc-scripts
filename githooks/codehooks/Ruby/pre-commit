@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# Copy to .git dir and rename to pre-commit
+
+ruby_file_locations = %{*.rb rubydev/*.rb}
+errors_found = 0
+errors = ""
+ruby_file_locations.split.each do |rubyfile|
+    check_rubycripts = `find #{ENV['GIT_DIR']}/../#{rubyfile} -exec ruby -c {} \\;`
+    check_rubyscripts.each do |r| 
+        if not r =~ /Syntax OK/ then
+            errors_found += 1
+            errors += "Error #{errors_found} : #{r}\n"
+        end
+    end
+end
+
+# Block the commit for these conditions
+# 1. Ruby compilation error
+if errors_found > 0 then
+    puts "There are syntax errors found"
+    puts "---"
+    puts "#{errors}"
+    puts "---"
+    puts "Please correct these and resubmit"
+    exit 1
+else
+    exit 0
+end
+
