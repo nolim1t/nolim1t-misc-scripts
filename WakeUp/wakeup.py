@@ -7,7 +7,7 @@ def WakeUp(mac_address):
     payload = '\xff' * 6 + hw_addr * 16
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    s.sendto(msg, ('<broadcast>', 9))
+    s.sendto(mac_address, ('<broadcast>', 9))
     s.close()
 
 
