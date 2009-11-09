@@ -1,0 +1,4 @@
+#!/usr/bin/env /usr/bin/php
+<?php
+    if ($argc > 1) if (file_exists($argv[1])) echo md5(file_get_contents($argv[1]));
+?>
