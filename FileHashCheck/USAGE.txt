@@ -1,0 +1,1 @@
+find . /directory/to/remember  -exec ./checkhash '{}' \;

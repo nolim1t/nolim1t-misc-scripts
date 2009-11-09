@@ -19,7 +19,7 @@
             $stmt->bindParam(2, $hashed);
             $stmt->execute();
             $stmt->closeCursor();
-            echo 'File hash added';
+            echo 'File hash for '.$argv[1].' added'."\n";
         } else {
             $stmt = $db->prepare('select count(*) from filehash where file = :file and hash = :hash');
             $stmt->bindParam(':file', $argv[1]);
