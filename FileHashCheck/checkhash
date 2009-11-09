@@ -1,4 +1,35 @@
 #!/usr/bin/env /usr/bin/php
 <?php
-    if ($argc > 1) if (file_exists($argv[1])) if (!is_dir($argv[1])) if (is_readable($argv[1])) echo md5(file_get_contents($argv[1]));
+    if ($argc > 1 && file_exists($argv[1]) && !is_dir($argv[1]) && is_readable($argv[1])) {
+        $sqlitedb='/tmp/filehash.db';
+        if (!file_exists($sqlitedb)) $create_schema = 'yes';
+        $db = new PDO('sqlite:'.$sqlitedb);
+        if (isset($create_schema) && $create_schema == 'yes') {
+            $db->exec('CREATE TABLE filehash (id INTEGER PRIMARY KEY AUTOINCREMENT, file VARCHAR(255), hash VARCHAR(128))');
+        }
+        $stmt = $db->prepare('SELECT count(*) from filehash where file = :file');
+        $stmt->bindParam(':file', $argv[1]);
+        $stmt->execute();
+        while ($r = $stmt->fetch()) $COUNT = $r[0];
+        $stmt->closeCursor();
+        $hashed = md5(file_get_contents($argv[1]));
+        if ($COUNT == 0) {
+            $stmt = $db->prepare('insert into filehash (file, hash) values (?, ?)');
+            $stmt->bindParam(1, $argv[1]);
+            $stmt->bindParam(2, $hashed);
+            $stmt->execute();
+            $stmt->closeCursor();
+            echo 'File hash added';
+        } else {
+            $stmt = $db->prepare('select count(*) from filehash where file = :file and hash = :hash');
+            $stmt->bindParam(':file', $argv[1]);
+            $stmt->bindparam(':hash', $hashed);
+            $stmt->execute();
+            while ($r = $stmt->fetch()) $CCOUNT = $r[0];
+            $stmt->closeCursor();
+            if ($CCOUNT != 1) {
+                echo 'File '.$argv[1].' has been modified'."\n";
+            }
+        }
+    }
 ?>
