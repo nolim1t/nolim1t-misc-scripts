@@ -1,4 +1,4 @@
 #!/usr/bin/env /usr/bin/php
 <?php
-    if ($argc > 1) if (file_exists($argv[1])) echo md5(file_get_contents($argv[1]));
+    if ($argc > 1) if (file_exists($argv[1])) if (!is_dir($argv[1])) if (is_readable($argv[1])) echo md5(file_get_contents($argv[1]));
 ?>
