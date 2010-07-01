@@ -1,0 +1,4 @@
+#!/bin/bash
+# GIT post-receive  hook for site deployment
+cd ..
+env -i git reset --hard
