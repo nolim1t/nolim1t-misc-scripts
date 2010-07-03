@@ -1,4 +1,16 @@
 #!/bin/bash
-# GIT post-receive  hook for site deployment
-cd ..
-env -i git reset --hard
+pushd /opt/sites/rails/btdotcom 2>/dev/null
+echo "************************"
+echo "Deploying application..."
+echo "************************"
+
+git reset --hard
+echo "************************"
+echo "Restarting application"
+echo "************************"
+env
+./stop.sh
+./start.sh
+popd 2>/dev/null
+
+echo "Application is now deployed!"
