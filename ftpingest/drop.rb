@@ -10,7 +10,7 @@ require 'guid'
 if server != nil then
     ftp = Net::FTP.new(server)
     ftp.login(user, pass)
-    thefilename = "#{Guid.new.to_s}.mp4}"
+    thefilename = "#{Guid.new.to_s}.mp4"
     puts "Sending #{file} as #{thefilename}"
     ftp.putbinaryfile(file,thefilename)
     ftp.close
