@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # Convert number to chinese
 def ntz(the_num)
   numbers = {
